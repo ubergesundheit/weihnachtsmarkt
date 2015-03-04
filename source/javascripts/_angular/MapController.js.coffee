@@ -40,6 +40,7 @@ angular.module("wm-map").controller "MapController", [
       return
     # set up basic stuff
     angular.extend $scope,
+      results: []
       muenster:
         lat: 51.96255
         lng: 7.62547
@@ -78,6 +79,8 @@ angular.module("wm-map").controller "MapController", [
           onEachFeature: $scope.geojson.onEachFeature
           pointToLayer: $scope.geojson.pointToLayer
           data: featureCollection
+
+        $scope.results = featureCollection.features.filter((f) -> f.properties.match == true ).map((f) -> { heading: f.properties.betreiber, text: f.properties.warenangeb})
 
         $timeout ->
           leafletData.getMap('map').then (map) ->

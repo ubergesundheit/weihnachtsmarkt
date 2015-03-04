@@ -14,6 +14,8 @@ $search_bar_max-width: 100%
 $btn_size: 32px
 $control-bg-color: #ccc
 
+$initial-detailview-height: 120px
+
 body
   padding: 0
   margin: 0
@@ -28,7 +30,7 @@ html, body, .container
   overflow-x: hidden
 
 #map
-  height: calc(100% - #{$search_bar_height})
+  height: calc(100% - #{$search_bar_height} - #{$initial-detailview-height})
 
 #nav_container
   width: 100%
@@ -219,7 +221,7 @@ img#c4m
   .hide_mobile
     display: none
 
-$initial-detailview-height: 48px
+
 
 #detailview
   position: absolute
@@ -228,65 +230,66 @@ $initial-detailview-height: 48px
   height: $initial-detailview-height
   left: 0px
   background-color: $control-bg-color
-  .handle
-    position: relative
-    width: 30%
-    max-width: 128px
-    background-color: $control-bg-color
-    top: -10px
-    height: 10px
-    margin: auto
-    border-radius: 5px 5px 0px 0px
+  // .handle
+  //   position: relative
+  //   width: 30%
+  //   max-width: 128px
+  //   background-color: $control-bg-color
+  //   top: -10px
+  //   height: 10px
+  //   margin: auto
+  //   border-radius: 5px 5px 0px 0px
+  h4, p
+    margin: 10px
+//// bounce of https://github.com/daneden/animate.css
+// .animate-attention
+//   -webkit-animation-duration: 1s
+//   animation-duration: 1s
+//   -webkit-animation-fill-mode: both
+//   animation-fill-mode: both
+//   -webkit-animation-iteration-count: infinite
+//   animation-iteration-count: infinite
+//   -webkit-animation-name: bounce
+//   animation-name: bounce
+//   -webkit-transform-origin: center bottom 0px
+//   -ms-transform-origin: center bottom 0px
+//   transform-origin: center bottom 0px
 
-// bound of https://github.com/daneden/animate.css
-.animate-attention
-  -webkit-animation-duration: 1s
-  animation-duration: 1s
-  -webkit-animation-fill-mode: both
-  animation-fill-mode: both
-  -webkit-animation-iteration-count: infinite
-  animation-iteration-count: infinite
-  -webkit-animation-name: bounce
-  animation-name: bounce
-  -webkit-transform-origin: center bottom 0px
-  -ms-transform-origin: center bottom 0px
-  transform-origin: center bottom 0px
 
+// @-webkit-keyframes bounce
+//   6%, 20%, 53%, 80%, 94%
+//     -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000)
+//     transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000)
+//     height: $initial-detailview-height + 0px
 
-@-webkit-keyframes bounce
-  6%, 20%, 53%, 80%, 94%
-    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000)
-    transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000)
-    height: $initial-detailview-height + 0px
+//   40%, 43%
+//     -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
+//     transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
+//     height: $initial-detailview-height + 15px
 
-  40%, 43%
-    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
-    transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
-    height: $initial-detailview-height + 15px
+//   70%
+//     -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
+//     transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
+//     height: $initial-detailview-height + 7px
 
-  70%
-    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
-    transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
-    height: $initial-detailview-height + 7px
+//   90%
+//     height: $initial-detailview-height + 2px
 
-  90%
-    height: $initial-detailview-height + 2px
+// @keyframes bounce
+//   6%, 20%, 53%, 80%, 94%
+//     -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000)
+//     transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000)
+//     height: $initial-detailview-height + 0px
 
-@keyframes bounce
-  6%, 20%, 53%, 80%, 94%
-    -webkit-transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000)
-    transition-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000)
-    height: $initial-detailview-height + 0px
+//   40%, 43%
+//     -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
+//     transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
+//     height: $initial-detailview-height + 15px
 
-  40%, 43%
-    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
-    transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
-    height: $initial-detailview-height + 15px
+//   70%
+//     -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
+//     transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
+//     height: $initial-detailview-height + 7px
 
-  70%
-    -webkit-transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
-    transition-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060)
-    height: $initial-detailview-height + 7px
-
-  90%
-    height: $initial-detailview-height + 2px
+//   90%
+//     height: $initial-detailview-height + 2px

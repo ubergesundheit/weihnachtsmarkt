@@ -222,6 +222,7 @@ img#c4m
     display: none
 
 
+$arrow-width: 30px
 
 #detailview
   position: absolute
@@ -240,7 +241,34 @@ img#c4m
   //   margin: auto
   //   border-radius: 5px 5px 0px 0px
   h4, p
-    margin: 10px
+    margin: 5px 0px
+  .searchResult
+    display: inline-block
+    margin: 0px $arrow-width
+    height: 100%
+  #left, #right
+    color: #333
+    position: absolute
+    width: $arrow-width
+    top: 0px
+    height: $initial-detailview-height
+    font-size: 50px
+    line-height: $initial-detailview-height
+    text-align: center
+    -moz-user-select: none
+    -webkit-user-select: none
+    -ms-user-select: none
+    user-select: none
+    &:active
+      background-color: rgba(#e0e0e0, 0.5)
+  #right
+    right: 0px
+  #left
+    left: 0px
+
+.disabled
+  color: #aaa !important
+
 //// bounce of https://github.com/daneden/animate.css
 // .animate-attention
 //   -webkit-animation-duration: 1s

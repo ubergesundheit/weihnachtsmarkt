@@ -8,12 +8,18 @@
       %input#search_input{ type: "text", placeholder: "Angebotssuche", ng_model: "search_query"}
   #reset_search.pointer{ title: "Suche zurücksetzen", ng_click: "search_query = ''", ng_show: "search_query != ''" }
     &times;
-  %leaflet#map{ center: "muenster", geojson: "geojson", defaults: "defaults", tiles: "tiles" }
-  #detailview
-    .searchResult{ ng_repeat: "result in results"}
-      %h4 {{result.heading}}
+  %leaflet#map{ center: "muenster", geojson: "geojson", defaults: "defaults", tiles: "tiles", markers: "markers" }
+  #detailview{ :"ng-swipe-left" => "bumpResultIndex(-1)", :"ng-swipe-right" => "bumpResultIndex(1)" }
+    #left{ ng_click: "bumpResultIndex(-1)", ng_class: "{disabled: results.length === 0}" }
+      &lsaquo;
+    .searchResult
+      %p{ ng_hide: "results.length !== 0" }
+        Hier erscheinen die Suchergebnisse
+      %h4 {{results[currResultIndex].heading}}
       %p
-        {{result.text}}
+        {{results[currResultIndex].text}}
+    #right{ ng_click: "bumpResultIndex(1)", ng_class: "{disabled: results.length === 0}" }
+      &rsaquo;
   #welcome{ ng_show: "show_welcome"}
     #overlay
     #welcome_panel

@@ -1,5 +1,6 @@
 # Libraries
 #= require angular
+#= require angular-touch
 #= require leaflet/dist/leaflet-src
 #= require ./_leaflet.usermarker
 #= require angular-leaflet-directive/dist/angular-leaflet-directive

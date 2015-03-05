@@ -16,6 +16,7 @@ angular.module('wm-map').service "searchService",[
         @applyFilter staendeService.getAll().features
       return
     applyFilter: (features) ->
+      matches = []
       # hide markets if set..
       if @_markt?
         features = features.filter((f) ->
@@ -29,8 +30,22 @@ angular.module('wm-map').service "searchService",[
         regex = /.^/
       features = features.map (f) ->
         f.properties.match = @_queryableProperties.some((q) -> regex.test(f.properties[q]))
+        if f.properties.match
+          text = ""
+          heading = "#{f.properties.markt.charAt(0).toUpperCase() + f.properties.markt.slice(1)} Stand Nr. #{f.properties.stand_nr}"
+          if f.properties.warenangeb != null
+            text = f.properties.warenangeb
+          if f.properties.betreiber != null
+            heading = "#{heading}, Betreiber: #{f.properties.betreiber}"
+          matches.push({
+            stand_nr: f.properties.stand_nr
+            heading: heading,
+            text: text
+          })
         f
       , @ # inject this into map
-      $rootScope.$broadcast 'map.updateFeatures', { type: "FeatureCollection", features: features }
+      $rootScope.$broadcast 'map.updateFeatures',
+        featureCollection: { type: "FeatureCollection", features: features },
+        matches: matches
       return
 ]

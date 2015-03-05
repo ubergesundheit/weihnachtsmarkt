@@ -7,7 +7,7 @@ angular.module('wm-map').service "staendeService", [
       self = @
       $http.get("data.json").success (data, status) ->
         self._setData data
-        $rootScope.$broadcast 'map.updateFeatures', self._data
+        $rootScope.$broadcast 'map.updateFeatures',  { featureCollection: self._data }
         return
       return
     _setData: (fCollection) ->

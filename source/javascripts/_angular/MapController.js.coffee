@@ -19,28 +19,54 @@ angular.module("wm-map").controller "MapController", [
         return hiStyle
       else
         return loStyle
-    highlightFeature = (e) ->
-      #this.openPopup();
-      layer = e.target
-      layer.setStyle hiStyle
+    # highlightFeature = (e) ->
+    #   #this.openPopup();
+    #   layer = e.target
+    #   layer.setStyle hiStyle
+    #   return
+    # resetHighlight = (e) ->
+    #   #this.closePopup();
+    #   layer = e.target
+    #   layer.setStyle loStyle
+    #   return
+    # highlightQuery = (e) ->
+    #   if searchService._query != ""
+    #     content = e.popup.getContent()
+    #     # transform the content
+    #     content = content.replace RegExp(searchService._query.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "gi"), (match) ->
+    #         return "<span class='popupHighlight'>#{match}</span>"
+    #     , "gi"
+    #     e.popup.setContent(content)
+    #   return
+
+    markStand = (index) ->
+      # $scope.markers
+      result = $scope.results[index]
+      featureIndex = $scope.geojson.data.features.map((f) -> f.properties.stand_nr).indexOf(result.stand_nr)
+      if featureIndex == -1
+      feature = $scope.geojson.data.features[featureIndex]
+      center = L.GeoJSON.geometryToLayer(feature).getBounds().getCenter()
+      $scope.markers.resultMarker.lat = center.lat
+      $scope.markers.resultMarker.lng = center.lng
       return
-    resetHighlight = (e) ->
-      #this.closePopup();
-      layer = e.target
-      layer.setStyle loStyle
-      return
-    highlightQuery = (e) ->
-      if searchService._query != ""
-        content = e.popup.getContent()
-        # transform the content
-        content = content.replace RegExp(searchService._query.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), "gi"), (match) ->
-            return "<span class='popupHighlight'>#{match}</span>"
-        , "gi"
-        e.popup.setContent(content)
-      return
+    clickFeature = (e) ->
+      # find the appropriate match index
+      index = $scope.results.map((r) -> r.stand_nr).indexOf(e.target.feature.properties.stand_nr)
+      if index != -1
+        $scope.$apply ->
+          $scope.currResultIndex = index
+          return
+      # return
     # set up basic stuff
     angular.extend $scope,
       results: []
+      markers:
+        resultMarker:
+          lat: 0
+          lng: 0
+          focus: true
+          iconUrl: 'http://api.tiles.mapbox.com/v4/marker/pin-s-33+f44@2x.png?access_token=pk.eyJ1IjoidWJlcmdlc3VuZGhlaXQiLCJhIjoiaHhTeV9WcyJ9.jditXHYWvnJegWSfrFGV3w'
+      currResultIndex: 0
       muenster:
         lat: 51.96255
         lng: 7.62547
@@ -61,18 +87,22 @@ angular.module("wm-map").controller "MapController", [
           layer.on
             # mouseover: highlightFeature
             # mouseout: resetHighlight
-            popupopen: highlightQuery
+            # popupopen: highlightQuery
+            click: clickFeature
 
-          popupContent = "#{feature.properties.markt.charAt(0).toUpperCase() + feature.properties.markt.slice(1)} Stand Nr. #{feature.properties.stand_nr}"
-          if feature.properties.warenangeb != null
-             popupContent = "#{popupContent}<br />#{feature.properties.warenangeb}"
-          if feature.properties.betreiber != null
-            popupContent = "#{popupContent}<br />#{feature.properties.betreiber}"
+          # feature.on
+          #   click: clickFeature
 
-          layer.bindPopup popupContent
+          # popupContent = "#{feature.properties.markt.charAt(0).toUpperCase() + feature.properties.markt.slice(1)} Stand Nr. #{feature.properties.stand_nr}"
+          # if feature.properties.warenangeb != null
+          #    popupContent = "#{popupContent}<br />#{feature.properties.warenangeb}"
+          # if feature.properties.betreiber != null
+          #   popupContent = "#{popupContent}<br />#{feature.properties.betreiber}"
+
+          # layer.bindPopup popupContent
 
           return
-      updateGeoJSONFromData: (featureCollection, includeChildren, focusFeatures) ->
+      updateGeoJSONFromData: (featureCollection) ->
         # Update the scope
         $scope.geojson =
           style: styleFun
@@ -80,7 +110,8 @@ angular.module("wm-map").controller "MapController", [
           pointToLayer: $scope.geojson.pointToLayer
           data: featureCollection
 
-        $scope.results = featureCollection.features.filter((f) -> f.properties.match == true ).map((f) -> { heading: f.properties.betreiber, text: f.properties.warenangeb})
+        # $scope.results = featureCollection.features.filter((f) -> f.properties.match == true ).map((f) -> { heading: f.properties.betreiber, text: f.properties.warenangeb})
+        # $scope.currResultIndex = 0
 
         $timeout ->
           leafletData.getMap('map').then (map) ->
@@ -115,6 +146,8 @@ angular.module("wm-map").controller "MapController", [
     applyQuery = (value, oldvalue, scope) ->
       query = $scope.search_query.trim()
       searchService.setFilter { query: query }
+      if $scope.results.length != 0
+        markStand($scope.currResultIndex)
       return
 
     focusInput = (value) ->
@@ -128,7 +161,27 @@ angular.module("wm-map").controller "MapController", [
     staendeService.fetchData()
 
     $scope.$on 'map.updateFeatures', (evt, data) ->
-      $scope.updateGeoJSONFromData(data)
+      $scope.updateGeoJSONFromData(data.featureCollection)
+      if data.matches?
+        $scope.results = data.matches
+        $scope.currResultIndex = 0
+        if $scope.results.length != 0
+          markStand($scope.currResultIndex)
+      return
+
+    $scope.$watch 'currResultIndex', (value) ->
+      if $scope.results.length != 0
+        markStand(value)
+      return
+
+    $scope.bumpResultIndex = (dir) ->
+      newIndex = $scope.currResultIndex + dir
+      if newIndex >= 0 and newIndex <= $scope.results.length - 1
+        $scope.currResultIndex = newIndex
+      else if newIndex < 0
+        $scope.currResultIndex = $scope.results.length - 1
+      else if newIndex > $scope.results.length - 1
+        $scope.currResultIndex = 0
       return
 
 

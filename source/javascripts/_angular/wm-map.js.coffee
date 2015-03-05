@@ -27,4 +27,4 @@ L.Popup = L.Popup.extend
 
 
 # initialize angular app
-angular.module "wm-map", ["leaflet-directive"]
+angular.module "wm-map", ["leaflet-directive", "ngTouch"]

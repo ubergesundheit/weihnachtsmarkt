@@ -41,13 +41,16 @@ angular.module("wm-map").controller "MapController", [
 
     markStand = (index) ->
       # $scope.markers
-      result = $scope.results[index]
-      featureIndex = $scope.geojson.data.features.map((f) -> f.properties.stand_nr).indexOf(result.stand_nr)
-      if featureIndex == -1
-      feature = $scope.geojson.data.features[featureIndex]
-      center = L.GeoJSON.geometryToLayer(feature).getBounds().getCenter()
-      $scope.markers.resultMarker.lat = center.lat
-      $scope.markers.resultMarker.lng = center.lng
+      if $scope.results.length == 0
+        $scope.markers.resultMarker.lat = 0
+        $scope.markers.resultMarker.lng = 0
+      else
+        result = $scope.results[index]
+        featureIndex = $scope.geojson.data.features.map((f) -> f.properties.stand_nr).indexOf(result.stand_nr)
+        feature = $scope.geojson.data.features[featureIndex]
+        center = L.GeoJSON.geometryToLayer(feature).getBounds().getCenter()
+        $scope.markers.resultMarker.lat = center.lat
+        $scope.markers.resultMarker.lng = center.lng
       return
     clickFeature = (e) ->
       # find the appropriate match index
@@ -146,8 +149,7 @@ angular.module("wm-map").controller "MapController", [
     applyQuery = (value, oldvalue, scope) ->
       query = $scope.search_query.trim()
       searchService.setFilter { query: query }
-      if $scope.results.length != 0
-        markStand($scope.currResultIndex)
+      markStand($scope.currResultIndex)
       return
 
     focusInput = (value) ->
